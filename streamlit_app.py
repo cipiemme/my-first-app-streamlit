@@ -1,45 +1,83 @@
 import streamlit as st
 
-# Configurazione pagina
-st.set_page_config(page_title="Iron Man App", page_icon="🤖", layout="centered")
+# 1. Configurazione della pagina e stili personalizzati (Colori e Stili)
+st.set_page_config(page_title="Ironman Feedback", page_icon="🏅", layout="centered")
 
-# Titolo
-st.title("🦾 Iron Man Dashboard")
-st.subheader("Benvenuto nel sistema di Tony Stark")
+# Aggiungiamo un po' di CSS personalizzato per il tema Ironman
+st.markdown("""
+    <style>
+    /* Cambia il colore del titolo principale in rosso stile Ironman */
+    h1 {
+        color: #cc0000;
+        text-align: center;
+        font-family: 'Impact', sans-serif;
+    }
+    /* Stile per il pulsante di submit */
+    .stButton>button {
+        background-color: #cc0000;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        border: none;
+        width: 100%;
+    }
+    .stButton>button:hover {
+        background-color: #ff0000;
+        color: white;
+    }
+    /* Sfondo leggero per evidenziare il form */
+    div[data-testid="stForm"] {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid #333333;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Sidebar
-st.sidebar.header("Controlli Armatura")
-potenza = st.sidebar.slider("Livello Potenza", 0, 100, 75)
-modalita = st.sidebar.selectbox("Modalità", ["Attacco", "Difesa", "Stealth"])
-attiva = st.sidebar.checkbox("Attiva Armatura")
+# Intestazione
+st.title("🏊🚴🏃 IRONMAN FEEDBACK")
+st.markdown("Hai superato i tuoi limiti. Ora dicci come è andata l'organizzazione della gara!")
 
-# Contenuto principale
-st.write("### Stato Armatura")
-
-if attiva:
-    st.success("Armatura Attiva")
-    st.progress(potenza)
+# 2. Creazione del Form
+with st.form(key='ironman_feedback_form'):
+    st.subheader("Raccontaci la tua esperienza")
     
-    if modalita == "Attacco":
-        st.error("Modalità Attacco Attiva 🚀")
-    elif modalita == "Difesa":
-        st.info("Modalità Difesa Attiva 🛡️")
+    # Input utente
+    name = st.text_input("Nome dell'Atleta (obbligatorio)", placeholder="Es. Jan Frodeno")
+    
+    # Slider per la soddisfazione (1 a 5)
+    rating = st.slider("Valutazione complessiva dell'evento", min_value=1, max_value=5, value=3)
+    
+    # Area di testo per i commenti
+    comments = st.text_area("Commenti (percorso, ristori, transizioni...)", placeholder="Il percorso in bici era fantastico, ma l'acqua era troppo fredda...")
+    
+    # Pulsante di invio
+    submit_button = st.form_submit_button(label="Invia Feedback")
+
+# 3. Gestione del submit e delle eccezioni/validazioni
+if submit_button:
+    # Gestione delle eccezioni: controlliamo che il nome non sia vuoto
+    if not name.strip():
+        st.error("⚠️ Attenzione: Il nome dell'atleta è obbligatorio. Per favore, compila il campo e riprova.")
     else:
-        st.warning("Modalità Stealth Attiva 🕶️")
-else:
-    st.warning("Armatura Disattivata")
-
-# Input utente
-st.write("### Comandi Vocali (simulati)")
-comando = st.text_input("Inserisci comando:")
-
-if comando:
-    st.write(f"Jarvis esegue: {comando}")
-
-# Pulsante
-if st.button("Avvia Sequenza di Volo"):
-    st.success("🚀 Decollo avviato!")
-
-# Footer
-st.write("---")
-st.caption("Creato da Tony Stark Industries")
+        # 4. Mostra i dati inseriti dopo l'invio
+        st.markdown("---")
+        st.write("### Riepilogo Feedback Ricevuto")
+        st.write(f"**Atleta:** {name}")
+        st.write(f"**Valutazione:** {rating} / 5")
+        
+        # Gestiamo il caso in cui il commento sia stato lasciato vuoto
+        if comments.strip():
+            st.write(f"**Commenti:** {comments}")
+        else:
+            st.write("**Commenti:** *Nessun commento aggiuntivo fornito.*")
+        
+        # 5. Messaggi condizionali basati sul rating
+        st.markdown("---")
+        if rating <= 2:
+            st.warning("Ci dispiace che la tua esperienza non sia stata all'altezza delle aspettative. Analizzeremo i tuoi commenti per migliorare le prossime edizioni. 😔")
+        elif rating >= 4:
+            st.success(f"Fantastico {name}! Siamo felicissimi che l'evento ti sia piaciuto. YOU ARE AN IRONMAN! 🏅")
+        else:
+            st.info("Grazie per il tuo feedback! Lavoreremo sodo per rendere la prossima gara ancora migliore.")
