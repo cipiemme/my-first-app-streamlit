@@ -1,63 +1,18 @@
 import streamlit as st
 
-# 1. Configurazione della pagina e stili personalizzati (Colori e Stili)
 st.set_page_config(page_title="Ironman Feedback", page_icon="🏅", layout="centered")
 
-# Aggiungiamo un po' di CSS personalizzato per il tema Ironman
-st.markdown("""
-    <style>
-    /* Cambia il colore del titolo principale in rosso stile Ironman */
-    h1 {
-        color: #cc0000;
-        text-align: center;
-        font-family: 'Impact', sans-serif;
-    }
-    /* Stile per il pulsante di submit */
-    .stButton>button {
-        background-color: #cc0000;
-        color: white;
-        font-weight: bold;
-        border-radius: 5px;
-        border: none;
-        width: 100%;
-    }
-    .stButton>button:hover {
-        background-color: #ff0000;
-        color: white;
-    }
-    /* Sfondo leggero per evidenziare il form */
-    div[data-testid="stForm"] {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 10px;
-        border: 2px solid #333333;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Intestazione
 st.title("🏊🚴🏃 IRONMAN FEEDBACK")
 st.markdown("Hai superato i tuoi limiti. Ora dicci come è andata l'organizzazione della gara!")
 
-# 2. Creazione del Form
 with st.form(key='ironman_feedback_form'):
     st.subheader("Raccontaci la tua esperienza")
-    
-    # Input utente
     name = st.text_input("Nome dell'Atleta (obbligatorio)", placeholder="Es. Jan Frodeno")
-    
-    # Slider per la soddisfazione (1 a 5)
     rating = st.slider("Valutazione complessiva dell'evento", min_value=1, max_value=5, value=3)
-    
-    # Area di testo per i commenti
-    comments = st.text_area("Commenti (percorso, ristori, transizioni...)", placeholder="Il percorso in bici era fantastico, ma l'acqua era troppo fredda...")
-    
-    # Pulsante di invio
+    comments = st.text_area("Commenti (percorso, ristori, transizioni...)", placeholder="Il percorso in bici era fantastico, ma l'acqua era troppo fredda...")    
     submit_button = st.form_submit_button(label="Invia Feedback")
 
-# 3. Gestione del submit e delle eccezioni/validazioni
 if submit_button:
-    # Gestione delle eccezioni: controlliamo che il nome non sia vuoto
     if not name.strip():
         st.error("⚠️ Attenzione: Il nome dell'atleta è obbligatorio. Per favore, compila il campo e riprova.")
     else:
